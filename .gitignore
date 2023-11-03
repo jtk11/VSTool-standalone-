@@ -1,0 +1,28 @@
+# Xcode #
+#########
+# Exclude user-specific Xcode files
+xcuserdata/
+
+# Exclude build products and Derived Data
+build/
+DerivedData/
+
+# Exclude project-specific settings
+*.xcworkspace
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+
+# Exclude provisioning profiles
+*.mobileprovision
+*.provisionprofile
+
+# Exclude the icon? files that are generated when an Apple Developer 
+Profile is downloaded
+**/*.icns
+
+# Exclude the Pods directory if you're using CocoaPods
+Pods/
+
+# Exclude temp files
+*~
+.DS_Store
