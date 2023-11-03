@@ -64,6 +64,26 @@ MainComponent::MainComponent()
     
     setMouseClickGrabsKeyboardFocus(false);
     setWantsKeyboardFocus(false);
+    
+    stopButton1.setButtonText("S");
+    stopButton1.addListener(this);
+    addAndMakeVisible(stopButton1);
+
+    stopButton2.setButtonText("S");
+    stopButton2.addListener(this);
+    addAndMakeVisible(stopButton2);
+
+    stopButton3.setButtonText("S");
+    stopButton3.addListener(this);
+    addAndMakeVisible(stopButton3);
+
+    stopButton4.setButtonText("S");
+    stopButton4.addListener(this);
+    addAndMakeVisible(stopButton4);
+    
+    allStopButton.setButtonText("!");
+    allStopButton.addListener(this);
+    addAndMakeVisible(allStopButton);
 }
 
 MainComponent::~MainComponent()
@@ -194,6 +214,15 @@ void MainComponent::resized()
     int buttonSpacing = 10;  // Horizontal spacing between buttons
 
     folderButton.setBounds(buttonSpacing, buttonYPosition, 60, 30);
+    int quadrantWidth = getWidth() / 2;
+    int quadrantHeight = (getHeight() - toolbarHeight) / 2;
+    int sButtonSize = 20; // The size of the "S" button
+
+    // Position the stop buttons in the top left corner of each quadrant
+    stopButton1.setBounds(quadrantWidth - sButtonSize, toolbarHeight, sButtonSize, sButtonSize);
+    stopButton2.setBounds(getWidth() - sButtonSize, toolbarHeight, sButtonSize, sButtonSize);
+    stopButton3.setBounds(quadrantWidth - sButtonSize, toolbarHeight + quadrantHeight, sButtonSize, sButtonSize);
+    stopButton4.setBounds(getWidth() - sButtonSize, toolbarHeight + quadrantHeight, sButtonSize, sButtonSize);
     
     // Place the diceButton to the right of the folderButton, with the defined spacing
     diceButton.setBounds(folderButton.getRight() + buttonSpacing, buttonYPosition, 60, 30);
@@ -212,7 +241,9 @@ void MainComponent::resized()
     
     playButton.setBounds(stop2Button.getRight() + buttonSpacing, buttonYPosition, 20, 20);
     
-    loopButton.setBounds(playButton.getRight() + buttonSpacing, buttonYPosition, 50, 20);
+    allStopButton.setBounds(playButton.getRight() + buttonSpacing, buttonYPosition, 20, 20);
+    
+    loopButton.setBounds(allStopButton.getRight() + buttonSpacing, buttonYPosition, 50, 20);
 
 }
 void MainComponent::mouseDown(const juce::MouseEvent& e)
@@ -355,7 +386,23 @@ void MainComponent::buttonClicked(juce::Button* button)
         // Now allow the ball to move
         shouldMoveBall = true;
     }
-
+    
+    if (button == &stopButton1)
+    {
+        audioHandler.stopSample(0); // Stop the first sample
+    }
+    else if (button == &stopButton2)
+    {
+        audioHandler.stopSample(1); // Stop the second sample
+    }
+    else if (button == &stopButton3)
+    {
+        audioHandler.stopSample(2); // Stop the third sample
+    }
+    else if (button == &stopButton4)
+    {
+        audioHandler.stopSample(3); // Stop the fourth sample
+    }
     
     else if (button == &stopButton)
     {
@@ -379,6 +426,11 @@ void MainComponent::buttonClicked(juce::Button* button)
         isPlayingBack = true;
         playbackIndex = 0;
         juce::Logger::writeToLog("playButton clicked. Starting playback.");
+    }
+    else if (button == &allStopButton)
+    {
+        audioHandler.stopAllSounds();  // This will stop all sounds
+        shouldMoveBall = false;        // This will stop the ball from moving
     }
     
     else if (button == &detuneButton)

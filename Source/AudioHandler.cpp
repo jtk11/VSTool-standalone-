@@ -155,6 +155,18 @@ void AudioHandler::stop()
     }
 }
 
+void AudioHandler::stopAllSounds() {
+    for (auto* transportSource : transportSources) {
+        transportSource->stop();
+    }
+}
+
+void AudioHandler::stopSample(int index) {
+    if (index >= 0 && index < transportSources.size()) {
+        transportSources[index]->stop();
+    }
+}
+
 void AudioHandler::detuneSounds()
 {
     // Generate a random semitone

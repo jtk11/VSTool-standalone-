@@ -48,6 +48,12 @@ private:
     juce::TextButton recButton;
     juce::TextButton stop2Button;
     juce::TextButton playButton;
+    private:
+    juce::TextButton stopButton1;
+    juce::TextButton stopButton2;
+    juce::TextButton stopButton3;
+    juce::TextButton stopButton4;
+    juce::TextButton allStopButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

@@ -16,6 +16,8 @@ public:
     void setMixLevels(float topLeft, float topRight, float bottomLeft, float bottomRight);
     void startPlaying();
     void detuneSounds();
+    void stopSample(int index);
+    void stopAllSounds();
 
 
 
