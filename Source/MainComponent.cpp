@@ -37,8 +37,8 @@ MainComponent::MainComponent()
     addAndMakeVisible(stopButton);
     
     // Initialize the timerHzSlider
-    timerHzSlider.setRange(0.1, 5.0, 0.1);
-    timerHzSlider.setValue(2); // Starting value (you had startTimerHz(4) before)
+    timerHzSlider.setRange(30.0, 200.0, 0.1);
+    timerHzSlider.setValue(50); // Starting value (you had startTimerHz(4) before)
     timerHzSlider.addListener(this);
     addAndMakeVisible(timerHzSlider);
     
@@ -120,18 +120,32 @@ void MainComponent::shuffleAudioFiles()
 void MainComponent::timerCallback()
 {
     if (shouldMoveBall) {
-        // Move the ball to the next point in the sequence
-        ballPosition = points[currentPointIndex];
-        
+        // Calculate the vector from the current ball position to the target point
+        juce::Point<float> direction = points[currentPointIndex] - ballPosition;
+
+        // Check if we are close enough to the target point to snap to it
+        const float snapThreshold = 0.5f; // Smaller threshold for more precise snapping
+        if (direction.getDistanceFromOrigin() < snapThreshold) {
+            ballPosition = points[currentPointIndex]; // Snap to target point
+            
+            // Increment the current point index and wrap it around if it exceeds the number of points
+            currentPointIndex = (currentPointIndex + 1) % 4; // Use modulo to loop back to 0
+        } else {
+            // Normalize the direction vector to a unit vector
+            direction = direction / direction.getDistanceFromOrigin();
+
+            // Move the ball by a small step towards the target point
+            const float stepSize = 2.0f; // Smaller step size for finer control
+            ballPosition += direction * stepSize;
+        }
+
         // Update the mix levels based on new ball position
         float topLeft, topRight, bottomLeft, bottomRight;
         computeMixLevels(topLeft, topRight, bottomLeft, bottomRight);
         audioHandler.setMixLevels(topLeft, topRight, bottomLeft, bottomRight);
 
-        // Update the current point index to move to the next point next time
-        currentPointIndex = (currentPointIndex + 1) % 4;
-        
-        repaint(); // Redraw with the new ball position
+        // Repaint to show the ball's new position.
+        repaint();
     }
     
     if (isPlayingBack)
@@ -150,8 +164,8 @@ void MainComponent::timerCallback()
         }
         else
         {
-            isPlayingBack = false;  // Stop playback once it reaches the end
-            juce::Logger::writeToLog("Playback finished.");
+            playbackIndex = 0;  // loop playback
+            juce::Logger::writeToLog("Looping playback.");
         }
      }
 }
@@ -314,9 +328,10 @@ void MainComponent::buttonClicked(juce::Button* button)
     
     else if (button == &rndMixButton)
     {
-        shouldMoveBall = true;
+        // Ensure no movement is happening while setting up new points
+        shouldMoveBall = false;
 
-        // Generate 4 random points for the joystick to jump to
+        // Generate 4 random points for the joystick to move to
         for (int i = 0; i < 4; ++i)
         {
             points[i].x = juce::Random::getSystemRandom().nextFloat() * (getWidth() - 30) + 15; // 15 and 30 are ball radii and diameter
@@ -324,7 +339,19 @@ void MainComponent::buttonClicked(juce::Button* button)
         }
 
         currentPointIndex = 0; // Reset the current point index
+
+        // Set the initial ball position to the first point to avoid a visual jump
+        ballPosition = points[0];
+        
+        int timerInterval = static_cast<int>(1000.0 / timerHzSlider.getValue());
+
+        // Restart the timer here if it's not always running
+        startTimer(timerInterval);
+
+        // Now allow the ball to move
+        shouldMoveBall = true;
     }
+
     
     else if (button == &stopButton)
     {

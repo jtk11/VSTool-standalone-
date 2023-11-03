@@ -26,3 +26,6 @@ Pods/
 # Exclude temp files
 *~
 .DS_Store
+
+# Exclude user state files
+*.xcuserstate
