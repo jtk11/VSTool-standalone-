@@ -5,7 +5,7 @@ class AudioHandler
 {
 public:
     AudioHandler();
-    ~AudioHandler();
+   virtual ~AudioHandler();
 
     void loadFiles(const juce::Array<juce::File>& files);  // Load multiple files
     void initializeAudio();
@@ -19,6 +19,8 @@ public:
     void stopSample(int index);
     void stopAllSounds();
     void startSample(int index);
+    void startRecording(const juce::File& file);
+    void stopRecording();
 
 
 
@@ -26,6 +28,10 @@ private:
     juce::AudioDeviceManager deviceManager;
     juce::AudioFormatManager formatManager;
     juce::MixerAudioSource mixerSource;
+    std::unique_ptr<juce::AudioFormatWriter> writer;
+    juce::File outputFile;
+    bool isRecording = false;
+    juce::CriticalSection writerLock;
     
     // We'll now have an array of AudioTransportSource objects and associated AudioFormatReaderSource objects
     juce::OwnedArray<juce::AudioTransportSource> transportSources;
@@ -35,4 +41,5 @@ private:
     juce::AudioSourcePlayer audioSourcePlayer;
     bool isLooping = false;
     juce::OwnedArray<juce::ResamplingAudioSource> resamplingSources; 
+    
 };

@@ -1,4 +1,5 @@
 #include "AudioHandler.h"
+#include <JuceHeader.h>
 
 AudioHandler::AudioHandler()
 {
@@ -26,6 +27,7 @@ AudioHandler::~AudioHandler()
     
     transportSources.clear();
     audioSourcePlayers.clear();
+    stopRecording();
 }
 
 
@@ -55,7 +57,6 @@ void AudioHandler::initializeAudio()
     }
 }
 
-
 void AudioHandler::loadFiles(const juce::Array<juce::File>& files)
 {
     mixerSource.removeAllInputs();
@@ -83,6 +84,48 @@ void AudioHandler::loadFiles(const juce::Array<juce::File>& files)
     }
     setLooping(true);
 }
+
+void AudioHandler::startRecording(const juce::File& file)
+{
+    // Check if already recording
+    if (isRecording)
+        stopRecording();
+
+    outputFile = file;
+    auto stream = outputFile.createOutputStream();
+    
+    if (stream != nullptr)
+    {
+        juce::WavAudioFormat wavFormat;
+        auto sampleRate = deviceManager.getCurrentAudioDevice()->getCurrentSampleRate();
+        writer.reset(wavFormat.createWriterFor(stream.release(), sampleRate, 1, 16, {}, 0));
+        
+        if (writer)
+        {
+            const juce::ScopedLock sl(writerLock);
+            isRecording = true;
+        }
+        else
+        {
+            // Handle the error: writer creation failed
+        }
+    }
+    else
+    {
+        // Handle the error: output stream couldn't be created
+    }
+}
+
+void AudioHandler::stopRecording()
+{
+    if (isRecording)
+    {
+        const juce::ScopedLock sl(writerLock); // Lock while tearing down the writer
+        isRecording = false;
+        writer.reset(); // Closes the file and finalizes the WAV header
+    }
+}
+
 void AudioHandler::startPlaying()
 {
     for (auto* transportSource : transportSources)
@@ -128,6 +171,13 @@ void AudioHandler::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer)
         buffer.buffer->addFrom(0, buffer.startSample, tempBuffer, 0, buffer.startSample, buffer.numSamples);
         if (buffer.buffer->getNumChannels() > 1)
             buffer.buffer->addFrom(1, buffer.startSample, tempBuffer, 1, buffer.startSample, buffer.numSamples);
+    }
+    
+    // If recording, write the incoming audio to the file
+    if (isRecording && writer != nullptr)
+    {
+        const juce::ScopedLock sl(writerLock); // Lock while writing to the file
+        writer->writeFromAudioSampleBuffer(*buffer.buffer, 0, buffer.numSamples);
     }
 }
 
