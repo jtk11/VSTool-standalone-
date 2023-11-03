@@ -37,8 +37,8 @@ MainComponent::MainComponent()
     addAndMakeVisible(stopButton);
     
     // Initialize the timerHzSlider
-    timerHzSlider.setRange(30.0, 200.0, 0.1);
-    timerHzSlider.setValue(50); // Starting value (you had startTimerHz(4) before)
+    timerHzSlider.setRange(30.0, 500.0, 0.1);
+    timerHzSlider.setValue(200); // Starting value (you had startTimerHz(4) before)
     timerHzSlider.addListener(this);
     addAndMakeVisible(timerHzSlider);
     
@@ -127,15 +127,10 @@ void MainComponent::timerCallback()
         if (direction.getDistanceFromOrigin() < snapThreshold) {
             ballPosition = points[currentPointIndex]; // Snap to target point
             
-            // Log position and index after snapping
-            juce::Logger::writeToLog("Snapped to point: " + juce::String(currentPointIndex) + 
-                                     " at position: " + ballPosition.toString());
 
             // Increment the current point index and wrap it around if it exceeds the number of points
             currentPointIndex = (currentPointIndex + 1) % 4;
-            // Log the next target point after incrementing
-            juce::Logger::writeToLog("Next target point index: " + juce::String(currentPointIndex) + 
-                                     " at position: " + points[currentPointIndex].toString());
+            
         } else {
             // Normalize the direction vector to a unit vector
             direction = direction / direction.getDistanceFromOrigin();
@@ -144,9 +139,7 @@ void MainComponent::timerCallback()
             const float stepSize = 1.0f;
             ballPosition += direction * stepSize;
             
-            // Log the ball's movement towards the point
-            juce::Logger::writeToLog("Ball moving towards point: " + juce::String(currentPointIndex) + 
-                                     " at position: " + ballPosition.toString());
+
         }
 
         // Update the mix levels based on new ball position
@@ -171,15 +164,11 @@ void MainComponent::timerCallback()
             computeMixLevels(topLeft, topRight, bottomLeft, bottomRight);
             audioHandler.setMixLevels(topLeft, topRight, bottomLeft, bottomRight);
             
-            // Log the ball's position during playback
-            juce::Logger::writeToLog("Playback position: " + juce::String(ballPosition.x) + 
-                                     ", " + juce::String(ballPosition.y));
         }
         else
         {
             playbackIndex = 0;  // loop playback
             // Log when playback loops
-            juce::Logger::writeToLog("Playback looped.");
         }
     }
 }

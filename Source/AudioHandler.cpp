@@ -157,8 +157,8 @@ void AudioHandler::stop()
 
 void AudioHandler::detuneSounds()
 {
-    // Generate a random semitone shift value between -24 and +5
-    int semitoneShift = juce::Random::getSystemRandom().nextInt(juce::Range<int>(-24, 6));
+    // Generate a random semitone
+    int semitoneShift = juce::Random::getSystemRandom().nextInt(juce::Range<int>(-36, -1));
 
     // Calculate the new resampling ratio based on the semitone shift
     double newResamplingRatio = std::pow(2.0, static_cast<double>(semitoneShift) / 12.0);
