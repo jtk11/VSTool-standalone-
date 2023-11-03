@@ -84,6 +84,23 @@ MainComponent::MainComponent()
     allStopButton.setButtonText("!");
     allStopButton.addListener(this);
     addAndMakeVisible(allStopButton);
+    
+    playButton1.setButtonText("P");
+    playButton1.addListener(this);
+    addAndMakeVisible(playButton1);
+
+    playButton2.setButtonText("P");
+    playButton2.addListener(this);
+    addAndMakeVisible(playButton2);
+
+    playButton3.setButtonText("P");
+    playButton3.addListener(this);
+    addAndMakeVisible(playButton3);
+
+    playButton4.setButtonText("P");
+    playButton4.addListener(this);
+    addAndMakeVisible(playButton4);
+    
 }
 
 MainComponent::~MainComponent()
@@ -217,35 +234,35 @@ void MainComponent::resized()
     int quadrantWidth = getWidth() / 2;
     int quadrantHeight = (getHeight() - toolbarHeight) / 2;
     int sButtonSize = 20; // The size of the "S" button
+    int pButtonWidth = 20; // The width of the "P" button
 
-    // Position the stop buttons in the top left corner of each quadrant
-    stopButton1.setBounds(quadrantWidth - sButtonSize, toolbarHeight, sButtonSize, sButtonSize);
+    // Adjust the position of the stop and play buttons in the quadrants
+    // Ensuring the "P" button is to the left of the "S" button
+    stopButton1.setBounds(quadrantWidth - sButtonSize - pButtonWidth, toolbarHeight, sButtonSize, sButtonSize);
+    playButton1.setBounds(stopButton1.getX() - pButtonWidth, toolbarHeight, pButtonWidth, sButtonSize);
+
     stopButton2.setBounds(getWidth() - sButtonSize, toolbarHeight, sButtonSize, sButtonSize);
-    stopButton3.setBounds(quadrantWidth - sButtonSize, toolbarHeight + quadrantHeight, sButtonSize, sButtonSize);
-    stopButton4.setBounds(getWidth() - sButtonSize, toolbarHeight + quadrantHeight, sButtonSize, sButtonSize);
-    
-    // Place the diceButton to the right of the folderButton, with the defined spacing
-    diceButton.setBounds(folderButton.getRight() + buttonSpacing, buttonYPosition, 60, 30);
-    
-    rndMixButton.setBounds(diceButton.getRight() + buttonSpacing, buttonYPosition, 60, 30);
-    
-    stopButton.setBounds(rndMixButton.getRight() + buttonSpacing, buttonYPosition, 40, 20);
-    
-    timerHzSlider.setBounds(stopButton.getRight() + buttonSpacing, buttonYPosition, 80, 20);
-    
-    detuneButton.setBounds(timerHzSlider.getRight() + buttonSpacing, buttonYPosition, 40, 20);
-    
-    recButton.setBounds(detuneButton.getRight() + buttonSpacing, buttonYPosition, 20, 20);
-    
-    stop2Button.setBounds(recButton.getRight() + buttonSpacing, buttonYPosition, 20, 20);
-    
-    playButton.setBounds(stop2Button.getRight() + buttonSpacing, buttonYPosition, 20, 20);
-    
-    allStopButton.setBounds(playButton.getRight() + buttonSpacing, buttonYPosition, 20, 20);
-    
-    loopButton.setBounds(allStopButton.getRight() + buttonSpacing, buttonYPosition, 50, 20);
+    playButton2.setBounds(stopButton2.getX() - pButtonWidth, toolbarHeight, pButtonWidth, sButtonSize);
 
+    stopButton3.setBounds(quadrantWidth - sButtonSize - pButtonWidth, toolbarHeight + quadrantHeight, sButtonSize, sButtonSize);
+    playButton3.setBounds(stopButton3.getX() - pButtonWidth, toolbarHeight + quadrantHeight, pButtonWidth, sButtonSize);
+
+    stopButton4.setBounds(getWidth() - sButtonSize, toolbarHeight + quadrantHeight, sButtonSize, sButtonSize);
+    playButton4.setBounds(stopButton4.getX() - pButtonWidth, toolbarHeight + quadrantHeight, pButtonWidth, sButtonSize);
+
+    // Position the remaining buttons in the toolbar
+    diceButton.setBounds(folderButton.getRight() + buttonSpacing, buttonYPosition, 60, 30);
+    rndMixButton.setBounds(diceButton.getRight() + buttonSpacing, buttonYPosition, 60, 30);
+    stopButton.setBounds(rndMixButton.getRight() + buttonSpacing, buttonYPosition, 40, 20);
+    timerHzSlider.setBounds(stopButton.getRight() + buttonSpacing, buttonYPosition, 80, 20);
+    detuneButton.setBounds(timerHzSlider.getRight() + buttonSpacing, buttonYPosition, 40, 20);
+    recButton.setBounds(detuneButton.getRight() + buttonSpacing, buttonYPosition, 20, 20);
+    stop2Button.setBounds(recButton.getRight() + buttonSpacing, buttonYPosition, 20, 20);
+    playButton.setBounds(stop2Button.getRight() + buttonSpacing, buttonYPosition, 20, 20);
+    allStopButton.setBounds(playButton.getRight() + buttonSpacing, buttonYPosition, 20, 20);
+    loopButton.setBounds(allStopButton.getRight() + buttonSpacing, buttonYPosition, 50, 20);
 }
+
 void MainComponent::mouseDown(const juce::MouseEvent& e)
 {
     // Check if the mouse down position is within the ball's region
@@ -437,6 +454,23 @@ void MainComponent::buttonClicked(juce::Button* button)
     {
         // Call the detune function from AudioHandler to change pitch of all sounds in the mixer
         audioHandler.detuneSounds();
+    }
+    
+    if (button == &playButton1)
+    {
+        audioHandler.startSample(0);  // Start the sample associated with the first button
+    }
+    else if (button == &playButton2)
+    {
+        audioHandler.startSample(1);  // Start the sample associated with the second button
+    }
+    else if (button == &playButton3)
+    {
+        audioHandler.startSample(2);  // Start the sample associated with the third button
+    }
+    else if (button == &playButton4)
+    {
+        audioHandler.startSample(3);  // Start the sample associated with the fourth button
     }
 
 }

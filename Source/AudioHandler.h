@@ -18,6 +18,7 @@ public:
     void detuneSounds();
     void stopSample(int index);
     void stopAllSounds();
+    void startSample(int index);
 
 
 

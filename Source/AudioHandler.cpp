@@ -91,6 +91,13 @@ void AudioHandler::startPlaying()
     }
 }
 
+void AudioHandler::startSample(int index) {
+    if (index >= 0 && index < transportSources.size()) {
+        transportSources[index]->setPosition(0); // Rewind to the start of the sample
+        transportSources[index]->start();
+    }
+}
+
 void AudioHandler::setMixLevels(float topLeft, float topRight, float bottomLeft, float bottomRight)
 {
     mixLevels[0] = topLeft;
