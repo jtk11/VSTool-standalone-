@@ -116,7 +116,6 @@ void MainComponent::shuffleAudioFiles()
         audioFiles.swap(i, j);
     }
 }
-
 void MainComponent::timerCallback()
 {
     if (shouldMoveBall) {
@@ -124,19 +123,30 @@ void MainComponent::timerCallback()
         juce::Point<float> direction = points[currentPointIndex] - ballPosition;
 
         // Check if we are close enough to the target point to snap to it
-        const float snapThreshold = 0.5f; // Smaller threshold for more precise snapping
+        const float snapThreshold = 0.5f;
         if (direction.getDistanceFromOrigin() < snapThreshold) {
             ballPosition = points[currentPointIndex]; // Snap to target point
             
+            // Log position and index after snapping
+            juce::Logger::writeToLog("Snapped to point: " + juce::String(currentPointIndex) + 
+                                     " at position: " + ballPosition.toString());
+
             // Increment the current point index and wrap it around if it exceeds the number of points
-            currentPointIndex = (currentPointIndex + 1) % 4; // Use modulo to loop back to 0
+            currentPointIndex = (currentPointIndex + 1) % 4;
+            // Log the next target point after incrementing
+            juce::Logger::writeToLog("Next target point index: " + juce::String(currentPointIndex) + 
+                                     " at position: " + points[currentPointIndex].toString());
         } else {
             // Normalize the direction vector to a unit vector
             direction = direction / direction.getDistanceFromOrigin();
 
             // Move the ball by a small step towards the target point
-            const float stepSize = 2.0f; // Smaller step size for finer control
+            const float stepSize = 1.0f;
             ballPosition += direction * stepSize;
+            
+            // Log the ball's movement towards the point
+            juce::Logger::writeToLog("Ball moving towards point: " + juce::String(currentPointIndex) + 
+                                     " at position: " + ballPosition.toString());
         }
 
         // Update the mix levels based on new ball position
@@ -153,7 +163,6 @@ void MainComponent::timerCallback()
         if (playbackIndex < recordedPositions.size())
         {
             ballPosition = recordedPositions[playbackIndex];
-            juce::Logger::writeToLog("Playing back position: " + juce::String(ballPosition.x) + ", " + juce::String(ballPosition.y));
             playbackIndex++;
             repaint();
             
@@ -161,14 +170,20 @@ void MainComponent::timerCallback()
             float topLeft, topRight, bottomLeft, bottomRight;
             computeMixLevels(topLeft, topRight, bottomLeft, bottomRight);
             audioHandler.setMixLevels(topLeft, topRight, bottomLeft, bottomRight);
+            
+            // Log the ball's position during playback
+            juce::Logger::writeToLog("Playback position: " + juce::String(ballPosition.x) + 
+                                     ", " + juce::String(ballPosition.y));
         }
         else
         {
             playbackIndex = 0;  // loop playback
-            juce::Logger::writeToLog("Looping playback.");
+            // Log when playback loops
+            juce::Logger::writeToLog("Playback looped.");
         }
-     }
+    }
 }
+
 
 void MainComponent::computeMixLevels(float& topLeft, float& topRight, float& bottomLeft, float& bottomRight)
 {
