@@ -60,6 +60,7 @@ private:
     juce::TextButton playButton4;
     juce::TextButton recAudioButton;
     juce::TextButton stopRecAudioButton;
+    juce::TextButton bitcrushButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

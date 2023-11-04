@@ -32,7 +32,7 @@ MainComponent::MainComponent()
     startTimerHz(4);
     
     // Set up the stopButton
-    stopButton.setButtonText("Stop");
+    stopButton.setButtonText("!!!");
     stopButton.addListener(this);
     addAndMakeVisible(stopButton);
     
@@ -43,7 +43,7 @@ MainComponent::MainComponent()
     addAndMakeVisible(timerHzSlider);
     
     // Set up the detuneButton
-    detuneButton.setButtonText("Pitch");
+    detuneButton.setButtonText("_");
     detuneButton.addListener(this);
     addAndMakeVisible(detuneButton);
     
@@ -51,11 +51,11 @@ MainComponent::MainComponent()
     recButton.addListener(this);
     addAndMakeVisible(recButton);
 
-    stop2Button.setButtonText("S");
+    stop2Button.setButtonText("!");
     stop2Button.addListener(this);
     addAndMakeVisible(stop2Button);
 
-    playButton.setButtonText("P");
+    playButton.setButtonText(">");
     playButton.addListener(this);
     addAndMakeVisible(playButton);
     
@@ -85,19 +85,19 @@ MainComponent::MainComponent()
     allStopButton.addListener(this);
     addAndMakeVisible(allStopButton);
     
-    playButton1.setButtonText("P");
+    playButton1.setButtonText(">");
     playButton1.addListener(this);
     addAndMakeVisible(playButton1);
 
-    playButton2.setButtonText("P");
+    playButton2.setButtonText(">");
     playButton2.addListener(this);
     addAndMakeVisible(playButton2);
 
-    playButton3.setButtonText("P");
+    playButton3.setButtonText(">");
     playButton3.addListener(this);
     addAndMakeVisible(playButton3);
 
-    playButton4.setButtonText("P");
+    playButton4.setButtonText(">");
     playButton4.addListener(this);
     addAndMakeVisible(playButton4);
     
@@ -110,6 +110,10 @@ MainComponent::MainComponent()
     stopRecAudioButton.setButtonText("\\");
     stopRecAudioButton.addListener(this);
     addAndMakeVisible(stopRecAudioButton);
+    
+    bitcrushButton.setButtonText("*");
+    bitcrushButton.addListener(this);
+    addAndMakeVisible(bitcrushButton);
     
 }
 
@@ -166,14 +170,15 @@ void MainComponent::resized()
 
     // Adjust the position of the stop and play buttons in the quadrants
     // Ensuring the "P" button is to the left of the "S" button
-    stopButton1.setBounds(quadrantWidth - sButtonSize - pButtonWidth, toolbarHeight, sButtonSize, sButtonSize);
-    playButton1.setBounds(stopButton1.getX() - pButtonWidth, toolbarHeight, pButtonWidth, sButtonSize);
+    
+    playButton1.setBounds(0, toolbarHeight, pButtonWidth, sButtonSize);
+    stopButton1.setBounds(playButton1.getRight(), toolbarHeight, sButtonSize, sButtonSize);
+
+    playButton3.setBounds(0, toolbarHeight + quadrantHeight, pButtonWidth, sButtonSize);
+    stopButton3.setBounds(playButton3.getRight(), toolbarHeight + quadrantHeight, sButtonSize, sButtonSize);
 
     stopButton2.setBounds(getWidth() - sButtonSize, toolbarHeight, sButtonSize, sButtonSize);
     playButton2.setBounds(stopButton2.getX() - pButtonWidth, toolbarHeight, pButtonWidth, sButtonSize);
-
-    stopButton3.setBounds(quadrantWidth - sButtonSize - pButtonWidth, toolbarHeight + quadrantHeight, sButtonSize, sButtonSize);
-    playButton3.setBounds(stopButton3.getX() - pButtonWidth, toolbarHeight + quadrantHeight, pButtonWidth, sButtonSize);
 
     stopButton4.setBounds(getWidth() - sButtonSize, toolbarHeight + quadrantHeight, sButtonSize, sButtonSize);
     playButton4.setBounds(stopButton4.getX() - pButtonWidth, toolbarHeight + quadrantHeight, pButtonWidth, sButtonSize);
@@ -183,7 +188,7 @@ void MainComponent::resized()
     rndMixButton.setBounds(diceButton.getRight() + buttonSpacing, buttonYPosition, 60, 30);
     stopButton.setBounds(rndMixButton.getRight() + buttonSpacing, buttonYPosition, 40, 20);
     timerHzSlider.setBounds(stopButton.getRight() + buttonSpacing, buttonYPosition, 80, 20);
-    detuneButton.setBounds(timerHzSlider.getRight() + buttonSpacing, buttonYPosition, 40, 20);
+    detuneButton.setBounds(timerHzSlider.getRight() + buttonSpacing, buttonYPosition, 20, 20);
     recButton.setBounds(detuneButton.getRight() + buttonSpacing, buttonYPosition, 20, 20);
     stop2Button.setBounds(recButton.getRight() + buttonSpacing, buttonYPosition, 20, 20);
     playButton.setBounds(stop2Button.getRight() + buttonSpacing, buttonYPosition, 20, 20);
@@ -191,7 +196,7 @@ void MainComponent::resized()
     //loopButton.setBounds(allStopButton.getRight() + buttonSpacing, buttonYPosition, 50, 20);
     recAudioButton.setBounds(allStopButton.getRight() + buttonSpacing, buttonYPosition, 20, 20); // Adjust dimensions as needed
     stopRecAudioButton.setBounds(recAudioButton.getRight() + buttonSpacing, buttonYPosition, 20, 20); // Adjust dimensions as needed
-
+    bitcrushButton.setBounds(stopRecAudioButton.getRight() + buttonSpacing, buttonYPosition, 20,20);
 }
 
 void MainComponent::shuffleAudioFiles()
