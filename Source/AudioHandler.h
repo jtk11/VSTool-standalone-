@@ -30,8 +30,10 @@ private:
     juce::MixerAudioSource mixerSource;
     std::unique_ptr<juce::AudioFormatWriter> writer;
     juce::File outputFile;
-    bool isRecording = false;
+    //bool isRecording = false;
     juce::CriticalSection writerLock;
+    std::atomic<bool> isRecording{ false };
+    
     
     // We'll now have an array of AudioTransportSource objects and associated AudioFormatReaderSource objects
     juce::OwnedArray<juce::AudioTransportSource> transportSources;

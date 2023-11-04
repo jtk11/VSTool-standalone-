@@ -156,30 +156,11 @@ void AudioHandler::setMixLevels(float topLeft, float topRight, float bottomLeft,
 
 
 
-void AudioHandler::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer)
+void AudioHandler::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
-    buffer.clearActiveBufferRegion();  // Clear the buffer
-
-    for (int i = 0; i < audioSources.size(); ++i)
-    {
-        juce::AudioBuffer<float> tempBuffer(buffer.buffer->getNumChannels(), buffer.numSamples);
-        juce::AudioSourceChannelInfo tempInfo(&tempBuffer, buffer.startSample, buffer.numSamples);
-
-        audioSources[i]->getNextAudioBlock(tempInfo);
-        tempBuffer.applyGain(mixLevels[i]);
-
-        buffer.buffer->addFrom(0, buffer.startSample, tempBuffer, 0, buffer.startSample, buffer.numSamples);
-        if (buffer.buffer->getNumChannels() > 1)
-            buffer.buffer->addFrom(1, buffer.startSample, tempBuffer, 1, buffer.startSample, buffer.numSamples);
-    }
-    
-    // If recording, write the incoming audio to the file
-    if (isRecording && writer != nullptr)
-    {
-        const juce::ScopedLock sl(writerLock); // Lock while writing to the file
-        writer->writeFromAudioSampleBuffer(*buffer.buffer, 0, buffer.numSamples);
-    }
+   
 }
+
 
 
 

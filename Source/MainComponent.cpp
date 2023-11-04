@@ -490,5 +490,34 @@ void MainComponent::buttonClicked(juce::Button* button)
     {
         audioHandler.startSample(3);  // Start the sample associated with the fourth button
     }
+    
+    if (button == &recAudioButton)
+    {
+        // Start recording logic
+        if (!isRecording)
+        {
+            int fileIndex = 1;
+            juce::File outputFile;
+
+            // Find the next available filename
+            do {
+                outputFile = juce::File::getSpecialLocation(juce::File::userDesktopDirectory).getChildFile("loop" + juce::String(fileIndex) + ".wav");
+                fileIndex++;
+            } while (outputFile.exists());
+
+            // Start recording to the file
+            audioHandler.startRecording(outputFile);
+            isRecording = true;
+        }
+    }
+    else if (button == &stopRecAudioButton)
+    {
+        // Stop recording logic
+        if (isRecording)
+        {
+            audioHandler.stopRecording();
+            isRecording = false;
+        }
+    }
 
 }
